@@ -43,7 +43,7 @@ struct PROMETHEUS_CPP_CORE_EXPORT ClientMetric {
   // Summary
 
   struct Quantile {
-    double quantile = 0.0;
+    std::string quantile = "0.0";
     double value = 0.0;
   };
 

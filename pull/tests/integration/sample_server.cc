@@ -1,6 +1,7 @@
 #include <prometheus/counter.h>
 #include <prometheus/exposer.h>
 #include <prometheus/registry.h>
+#include <prometheus/summary.h>
 
 #include <chrono>
 #include <map>
@@ -26,17 +27,28 @@ int main() {
                              .Labels({{"label", "value"}})
                              .Register(*registry);
 
+  auto& summary_family = BuildSummary()
+                             .Name("time_running_duration_ms")
+                             .Help("How many seconds is this server running?")
+                             .Labels({{"label", "value"}})
+                             .Register(*registry);
+
   // add a counter to the metric family
   auto& second_counter = counter_family.Add(
       {{"another_label", "value"}, {"yet_another_label", "value"}});
 
+prometheus::Summary &first_summary =  summary_family.Add({{"label","value"}},
+prometheus::Summary::Quantiles{{0.5,0.01,"p50"},{0.90,0.005,"p90"},{0.9,0.001,"p99"}});
   // ask the exposer to scrape the registry on incoming scrapes
   exposer.RegisterCollectable(registry);
 
   for (;;) {
-    std::this_thread::sleep_for(std::chrono::seconds(1));
+    auto start = std::chrono::system_clock::now();
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
     // increment the counter by one (second)
     second_counter.Increment();
+    auto end = std::chrono::system_clock::now();
+    first_summary.Observe(std::chrono::duration_cast<std::chrono::milliseconds>(end-start).count());
   }
   return 0;
 }

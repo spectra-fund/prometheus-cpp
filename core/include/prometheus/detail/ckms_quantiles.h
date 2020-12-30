@@ -17,8 +17,10 @@ class PROMETHEUS_CPP_CORE_EXPORT CKMSQuantiles {
     const double error;
     const double u;
     const double v;
+    std::string name = "";
 
     Quantile(double quantile, double error);
+    Quantile(double quantile, double error, const std::string& name);
   };
 
  private:

@@ -12,7 +12,13 @@ CKMSQuantiles::Quantile::Quantile(double quantile, double error)
       error(error),
       u(2.0 * error / (1.0 - quantile)),
       v(2.0 * error / quantile) {}
-
+CKMSQuantiles::Quantile::Quantile(double quantile, double error,
+                                  const std::string& name)
+    : quantile(quantile),
+      error(error),
+      u(2.0 * error / (1.0 - quantile)),
+      v(2.0 * error / quantile),
+      name(name) {}
 CKMSQuantiles::Item::Item(double value, int lower_delta, int delta)
     : value(value), g(lower_delta), delta(delta) {}
 

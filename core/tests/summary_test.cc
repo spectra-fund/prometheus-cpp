@@ -43,13 +43,15 @@ TEST(SummaryTest, quantile_size) {
 }
 
 TEST(SummaryTest, quantile_bounds) {
-  Summary summary{Summary::Quantiles{{0.5, 0.05}, {0.90, 0.01}, {0.99, 0.001}}};
+  Summary summary{Summary::Quantiles{
+      {0.50, 0.05, "0.50"}, {0.90, 0.01, "0.90"}, {0.99, 0.001, "0.99"}}};
+  
   auto metric = summary.Collect();
   auto s = metric.summary;
   ASSERT_EQ(s.quantile.size(), 3U);
-  EXPECT_DOUBLE_EQ(s.quantile.at(0).quantile, 0.5);
-  EXPECT_DOUBLE_EQ(s.quantile.at(1).quantile, 0.9);
-  EXPECT_DOUBLE_EQ(s.quantile.at(2).quantile, 0.99);
+  EXPECT_EQ(s.quantile.at(0).quantile, "0.50");
+  EXPECT_EQ(s.quantile.at(1).quantile, "0.90");
+  EXPECT_EQ(s.quantile.at(2).quantile, "0.99");
 }
 
 TEST(SummaryTest, quantile_values) {

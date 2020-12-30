@@ -117,8 +117,13 @@ TEST_F(TextSerializerTest, shouldSerializeSummary) {
   EXPECT_THAT(
       serialized,
       testing::HasSubstr(
-          name + "{quantile=\"0.50000000000000000\"} 0.0000000000000000"));
-}
+          name + "{quantile=\"0.50\""));
 
+  EXPECT_THAT(
+      serialized,
+      testing::HasSubstr(
+          "} 0.000"));
+
+}
 }  // namespace
 }  // namespace prometheus
